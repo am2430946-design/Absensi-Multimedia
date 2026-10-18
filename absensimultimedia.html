@@ -1,0 +1,2881 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Multimedia Attendance System</title>
+
+<style>
+:root {
+  --primary: #6c5ce7;
+  --primary-light: #eeeaff;
+  --dark: #171a2b;
+  --bg: #f5f6fb;
+  --white: #ffffff;
+  --text: #252943;
+  --muted: #858ba5;
+  --border: #e9eaf2;
+  --green: #16a879;
+  --red: #e74c5e;
+  --yellow: #e6a322;
+  --blue: #3486ed;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+button, input, select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+  width: 250px;
+  background: var(--dark);
+  color: white;
+  padding: 28px 18px;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 20;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 8px 30px;
+}
+
+.brand-icon {
+  width: 43px;
+  height: 43px;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  font-size: 23px;
+  background: linear-gradient(135deg, #8d7cff, #5541d7);
+}
+
+.brand h2 {
+  font-size: 16px;
+}
+
+.brand small {
+  display: block;
+  font-size: 11px;
+  color: #a6a9c4;
+  margin-top: 4px;
+}
+
+.menu-title {
+  font-size: 10px;
+  color: #8b90ab;
+  letter-spacing: 1.5px;
+  padding: 15px 12px;
+}
+
+.menu button {
+  width: 100%;
+  border: none;
+  color: #aeb3ca;
+  background: transparent;
+  padding: 14px 13px;
+  text-align: left;
+  border-radius: 10px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  transition: .2s;
+}
+
+.menu button:hover,
+.menu button.active {
+  color: white;
+  background: #34334e;
+}
+
+.menu button.active {
+  border-left: 3px solid #8d7cff;
+}
+
+.sidebar-footer {
+  position: absolute;
+  bottom: 25px;
+  left: 25px;
+  right: 25px;
+  font-size: 11px;
+  color: #a6a9c4;
+  line-height: 1.8;
+}
+
+/* MAIN */
+
+.main {
+  margin-left: 250px;
+  width: calc(100% - 250px);
+  min-width: 0;
+}
+
+.topbar {
+  background: white;
+  padding: 20px 32px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.topbar h2 {
+  font-size: 20px;
+}
+
+.topbar p {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  color: white;
+  background: var(--primary);
+  border-radius: 50%;
+  font-size: 17px;
+}
+
+.content {
+  padding: 30px 32px;
+  max-width: 1600px;
+  margin: auto;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+.welcome {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.welcome h1 {
+  font-size: 26px;
+  margin-bottom: 8px;
+}
+
+.welcome p {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.date-badge {
+  background: white;
+  border: 1px solid var(--border);
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+/* BUTTONS */
+
+.btn {
+  border: none;
+  border-radius: 9px;
+  padding: 11px 15px;
+  font-size: 12px;
+  font-weight: bold;
+  transition: .2s;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #5745d4;
+}
+
+.btn-light {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.btn-danger {
+  background: #fff0f0;
+  color: var(--red);
+}
+
+.btn-success {
+  background: #e5f8f0;
+  color: var(--green);
+}
+
+/* STATISTICS */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 25px;
+}
+
+.stat-card {
+  background: white;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.stat-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+.stat-top span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.stat-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+}
+
+.purple { background: #eeeaff; }
+.green { background: #e3f8ef; }
+.orange { background: #fff2df; }
+.red { background: #ffebed; }
+
+.stat-card h2 {
+  font-size: 27px;
+  margin-bottom: 6px;
+}
+
+.stat-card small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* CARDS */
+
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 23px;
+  margin-bottom: 22px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+.card-header h3 {
+  font-size: 16px;
+}
+
+.card-header p {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.input {
+  border: 1px solid var(--border);
+  background: white;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--text);
+  max-width: 100%;
+}
+
+.filters .input {
+  width: 190px;
+}
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 700px;
+}
+
+th {
+  color: var(--muted);
+  font-size: 11px;
+  text-align: left;
+  font-weight: bold;
+  padding: 14px 12px;
+  background: #fafaff;
+  border-bottom: 1px solid var(--border);
+}
+
+td {
+  padding: 15px 12px;
+  font-size: 12px;
+  border-bottom: 1px solid #f0f1f6;
+}
+
+tbody tr:hover {
+  background: #fcfcff;
+}
+
+.member-name {
+  font-weight: bold;
+}
+
+.member-class {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.status {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.status-hadir {
+  color: var(--green);
+  background: #e5f8f0;
+}
+
+.status-izin {
+  color: var(--blue);
+  background: #eaf2ff;
+}
+
+.status-sakit {
+  color: var(--yellow);
+  background: #fff5df;
+}
+
+.status-alfa {
+  color: var(--red);
+  background: #ffebed;
+}
+
+.status-belum {
+  color: var(--muted);
+  background: #f0f1f6;
+}
+
+.attendance-select {
+  min-width: 105px;
+  padding: 7px;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: white;
+  font-size: 11px;
+}
+
+.empty {
+  padding: 35px;
+  text-align: center;
+  color: var(--muted);
+}
+
+/* SUMMARY */
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.summary-item {
+  margin-bottom: 22px;
+}
+
+.summary-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-bottom: 9px;
+}
+
+.bar {
+  background: #f0f1f6;
+  height: 9px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.bar div {
+  height: 100%;
+  border-radius: 20px;
+  transition: width .3s;
+}
+
+.bar-green { background: var(--green); }
+.bar-blue { background: var(--blue); }
+.bar-yellow { background: var(--yellow); }
+.bar-red { background: var(--red); }
+
+/* MODAL */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(13,17,36,.55);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 100;
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal-box {
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 430px;
+}
+
+.modal-box h3 {
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 7px;
+  font-weight: bold;
+}
+
+.form-group .input {
+  width: 100%;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* NOTIFICATION */
+
+.toast {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background: #20243a;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 10px;
+  font-size: 12px;
+  z-index: 200;
+  display: none;
+  box-shadow: 0 10px 35px #0002;
+}
+
+.toast.show {
+  display: block;
+}
+
+/* MOBILE */
+
+@media(max-width:1100px) {
+  .sidebar {
+    width: 210px;
+  }
+
+  .main {
+    margin-left: 210px;
+    width: calc(100% - 210px);
+  }
+
+  .content {
+    padding: 25px 20px;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media(max-width:700px) {
+  .sidebar {
+    width: 65px;
+    padding: 20px 7px;
+  }
+
+  .brand {
+    justify-content: center;
+    padding: 0 0 25px;
+  }
+
+  .brand-text,
+  .menu-title,
+  .menu-label,
+  .sidebar-footer {
+    display: none;
+  }
+
+  .menu button {
+    text-align: center;
+    padding: 14px 3px;
+    font-size: 18px;
+  }
+
+  .main {
+    margin-left: 65px;
+    width: calc(100% - 65px);
+  }
+
+  .topbar {
+    padding: 16px;
+  }
+
+  .topbar h2 {
+    font-size: 16px;
+  }
+
+  .topbar p {
+    font-size: 10px;
+  }
+
+  .profile span {
+    display: none;
+  }
+
+  .content {
+    padding: 20px 12px;
+  }
+
+  .welcome {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .welcome h1 {
+    font-size: 21px;
+  }
+
+  .date-badge {
+    font-size: 10px;
+  }
+
+  .stats {
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 14px;
+  }
+
+  .stat-card h2 {
+    font-size: 23px;
+  }
+
+  .stat-top span {
+    font-size: 10px;
+  }
+
+  .stat-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 15px;
+  }
+
+  .card {
+    padding: 15px;
+  }
+
+  .filters {
+    width: 100%;
+  }
+
+  .filters .input {
+    width: 100%;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .toast {
+    left: 80px;
+    right: 12px;
+    bottom: 12px;
+  }
+}
+
+@media print {
+  .sidebar, .topbar, .filters, .btn, .menu {
+    display: none !important;
+  }
+
+  .main {
+    width: 100%;
+    margin: 0;
+  }
+
+  .content {
+    padding: 0;
+  }
+
+  body {
+    background: white;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <div class="brand">
+      <div class="brand-icon">🎬</div>
+      <div class="brand-text">
+        <h2>MM Attendance</h2>
+        <small>EXTRACURRICULAR</small>
+      </div>
+    </div>
+
+    <div class="menu-title">MENU UTAMA</div>
+
+    <div class="menu">
+      <button class="active" data-page="dashboard">
+        📊 <span class="menu-label"> Dashboard</span>
+      </button>
+
+      <button data-page="anggota">
+        👥 <span class="menu-label"> Data Anggota</span>
+      </button>
+
+      <button data-page="absensi">
+        ✅ <span class="menu-label"> Absensi</span>
+      </button>
+
+      <button data-page="rekap">
+        📈 <span class="menu-label"> Rekap Absensi</span>
+      </button>
+    </div>
+
+    <div class="sidebar-footer">
+      <strong>Multimedia Club</strong><br>
+      Sistem Absensi Digital<br>
+      Versi 1.0
+    </div>
+
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <div class="topbar">
+      <div>
+        <h2 id="pageTitle">Dashboard</h2>
+        <p>Sistem Informasi Absensi Ekstrakurikuler Multimedia</p>
+      </div>
+
+      <div class="profile">
+        <div class="avatar">🎓</div>
+        <span>Pengurus Multimedia</span>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <section class="page active" id="dashboard">
+
+        <div class="welcome">
+          <div>
+            <h1>Halo, Tim Multimedia! 👋</h1>
+            <p>Kelola kehadiran anggota dengan lebih mudah dan teratur.</p>
+          </div>
+
+          <div class="date-badge" id="tanggalDashboard"></div>
+        </div>
+
+        <div class="stats">
+
+          <div class="stat-card">
+            <div class="stat-top">
+              <span>Total Anggota</span>
+              <div class="stat-icon purple">👥</div>
+            </div>
+            <h2 id="totalAnggota">0</h2>
+            <small>Anggota terdaftar</small>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-top">
+              <span>Hadir Hari Ini</span>
+              <div class="stat-icon green">✓</div>
+            </div>
+            <h2 id="totalHadir">0</h2>
+            <small>Anggota hadir</small>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-top">
+              <span>Izin / Sakit</span>
+              <div class="stat-icon orange">📝</div>
+            </div>
+            <h2 id="totalIzinSakit">0</h2>
+            <small>Anggota tidak hadir dengan keterangan</small>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-top">
+              <span>Alfa</span>
+              <div class="stat-icon red">!</div>
+            </div>
+            <h2 id="totalAlfa">0</h2>
+            <small>Tanpa keterangan</small>
+          </div>
+
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3>Absensi Hari Ini</h3>
+              <p>Ringkasan kehadiran anggota ekstrakurikuler.</p>
+            </div>
+            <button class="btn btn-primary" onclick="showPage('absensi')">
+              Kelola Absensi →
+            </button>
+          </div>
+
+          <div class="summary-grid">
+
+            <div>
+              <div class="summary-item">
+                <div class="summary-label">
+                  <span>Hadir</span>
+                  <strong id="labelHadir">0%</strong>
+                </div>
+                <div class="bar">
+                  <div class="bar-green" id="barHadir" style="width:0"></div>
+                </div>
+              </div>
+
+              <div class="summary-item">
+                <div class="summary-label">
+                  <span>Izin</span>
+                  <strong id="labelIzin">0%</strong>
+                </div>
+                <div class="bar">
+                  <div class="bar-blue" id="barIzin" style="width:0"></div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="summary-item">
+                <div class="summary-label">
+                  <span>Sakit</span>
+                  <strong id="labelSakit">0%</strong>
+                </div>
+                <div class="bar">
+                  <div class="bar-yellow" id="barSakit" style="width:0"></div>
+                </div>
+              </div>
+
+              <div class="summary-item">
+                <div class="summary-label">
+                  <span>Alfa</span>
+                  <strong id="labelAlfa">0%</strong>
+                </div>
+                <div class="bar">
+                  <div class="bar-red" id="barAlfa" style="width:0"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3>Aktivitas Absensi</h3>
+              <p>Data kehadiran untuk tanggal yang dipilih.</p>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>NO.</th>
+                  <th>NAMA ANGGOTA</th>
+                  <th>KELAS</th>
+                  <th>STATUS</th>
+                </tr>
+              </thead>
+              <tbody id="dashboardTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- DATA ANGGOTA -->
+      <section class="page" id="anggota">
+
+        <div class="welcome">
+          <div>
+            <h1>Data Anggota 👥</h1>
+            <p>Kelola data anggota ekstrakurikuler Multimedia.</p>
+          </div>
+
+          <button class="btn btn-primary" onclick="openModal()">
+            + Tambah Anggota
+          </button>
+        </div>
+
+        <div class="card">
+
+          <div class="card-header">
+            <div>
+              <h3>Daftar Anggota</h3>
+              <p>Tambah, cari, dan kelola anggota.</p>
+            </div>
+
+            <div class="filters">
+              <input class="input" id="searchAnggota"
+                placeholder="Cari nama atau kelas..."
+                oninput="renderMembers()">
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>NO.</th>
+                  <th>NAMA ANGGOTA</th>
+                  <th>KELAS</th>
+                  <th>AKSI</th>
+                </tr>
+              </thead>
+              <tbody id="membersTable"></tbody>
+            </table>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ABSENSI -->
+      <section class="page" id="absensi">
+
+        <div class="welcome">
+          <div>
+            <h1>Absensi Anggota ✅</h1>
+            <p>Tentukan status kehadiran setiap anggota.</p>
+          </div>
+        </div>
+
+        <div class="card">
+
+          <div class="card-header">
+            <div>
+              <h3>Formulir Kehadiran</h3>
+              <p>Pilih tanggal pertemuan, lalu isi status anggota.</p>
+            </div>
+
+            <input type="date" class="input"
+              id="tanggalAbsensi" onchange="renderAttendance()">
+          </div>
+
+          <div class="filters" style="margin-bottom:20px">
+            <input class="input" id="searchAbsensi"
+              placeholder="Cari nama anggota..."
+              oninput="renderAttendance()">
+
+            <button class="btn btn-light" onclick="setAll('Hadir')">
+              Semua Hadir
+            </button>
+
+            <button class="btn btn-primary" onclick="saveAttendance()">
+              💾 Simpan Absensi
+            </button>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>NO.</th>
+                  <th>NAMA ANGGOTA</th>
+                  <th>KELAS</th>
+                  <th>STATUS KEHADIRAN</th>
+                </tr>
+              </thead>
+              <tbody id="attendanceTable"></tbody>
+            </table>
+          </div>
+
+          <p style="color:var(--muted);font-size:11px;margin-top:15px">
+            Periksa kembali status sebelum menekan tombol Simpan Absensi.
+          </p>
+
+        </div>
+
+      </section>
+
+      <!-- REKAP -->
+      <section class="page" id="rekap">
+
+        <div class="welcome">
+          <div>
+            <h1>Rekap Absensi 📈</h1>
+            <p>Evaluasi kehadiran anggota berdasarkan periode.</p>
+          </div>
+        </div>
+
+        <div class="card">
+
+          <div class="card-header">
+            <div>
+              <h3>Filter Rekap</h3>
+              <p>Pilih rentang tanggal untuk melihat data.</p>
+            </div>
+          </div>
+
+          <div class="filters">
+            <input type="date" class="input" id="rekapMulai">
+
+            <input type="date" class="input" id="rekapSampai">
+
+            <button class="btn btn-primary" onclick="renderRecap()">
+              Tampilkan
+            </button>
+
+            <button class="btn btn-light" onclick="exportCSV()">
+              ↓ Unduh CSV
+            </button>
+
+            <button class="btn btn-light" onclick="window.print()">
+              🖨 Cetak
+            </button>
+          </div>
+
+        </div>
+
+        <div class="stats">
+
+          <div class="stat-card">
+            <div class="stat-top">
+              <span>Total Pertemuan</span>
+              <div class="stat-icon purple">📅</div>
+            </div>
+            <h2 id="recapMeetings">0</h2>
+            <small>Tanggal dengan catatan absensi</small>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-top">
+              <span>Total Hadir</span>
+              <div class="stat-icon green">✓</div>
+            </div>
+            <h2 id="recapPresent">0</h2>
+            <small>Catatan berstatus hadir</small>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-top">
+              <span>Total Izin / Sakit</span>
+              <div class="stat-icon orange">📝</div>
+            </div>
+            <h2 id="recapExcused">0</h2>
+            <small>Catatan berizin atau sakit</small>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-top">
+              <span>Total Alfa</span>
+              <div class="stat-icon red">!</div>
+            </div>
+            <h2 id="recapAbsent">0</h2>
+            <small>Catatan tanpa keterangan</small>
+          </div>
+
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div><!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Multimedia Attendance System</title>
+
+<style>
+:root {
+  --primary: #6c5ce7;
+  --primary-light: #eeeaff;
+  --dark: #171a2b;
+  --bg: #f5f6fb;
+  --white: #ffffff;
+  --text: #252943;
+  --muted: #858ba5;
+  --border: #e9eaf2;
+  --green: #16a879;
+  --red: #e74c5e;
+  --yellow: #e6a322;
+  --blue: #3486ed;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+button, input, select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+  width: 250px;
+  background: var(--dark);
+  color: white;
+  padding: 28px 18px;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 20;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 8px 30px;
+}
+
+.brand-icon {
+  width: 43px;
+  height: 43px;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  font-size: 23px;
+  background: linear-gradient(135deg, #8d7cff, #5541d7);
+}
+
+.brand h2 {
+  font-size: 16px;
+}
+
+.brand small {
+  display: block;
+  font-size: 11px;
+  color: #a6a9c4;
+  margin-top: 4px;
+}
+
+.menu-title {
+  font-size: 10px;
+  color: #8b90ab;
+  letter-spacing: 1.5px;
+  padding: 15px 12px;
+}
+
+.menu button {
+  width: 100%;
+  border: none;
+  color: #aeb3ca;
+  background: transparent;
+  padding: 14px 13px;
+  text-align: left;
+  border-radius: 10px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  transition: .2s;
+}
+
+.menu button:hover,
+.menu button.active {
+  color: white;
+  background: #34334e;
+}
+
+.menu button.active {
+  border-left: 3px solid #8d7cff;
+}
+
+.sidebar-footer {
+  position: absolute;
+  bottom: 25px;
+  left: 25px;
+  right: 25px;
+  font-size: 11px;
+  color: #a6a9c4;
+  line-height: 1.8;
+}
+
+/* MAIN */
+
+.main {
+  margin-left: 250px;
+  width: calc(100% - 250px);
+  min-width: 0;
+}
+
+.topbar {
+  background: white;
+  padding: 20px 32px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.topbar h2 {
+  font-size: 20px;
+}
+
+.topbar p {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  color: white;
+  background: var(--primary);
+  border-radius: 50%;
+  font-size: 17px;
+}
+
+.content {
+  padding: 30px 32px;
+  max-width: 1600px;
+  margin: auto;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+.welcome {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.welcome h1 {
+  font-size: 26px;
+  margin-bottom: 8px;
+}
+
+.welcome p {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.date-badge {
+  background: white;
+  border: 1px solid var(--border);
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+/* BUTTONS */
+
+.btn {
+  border: none;
+  border-radius: 9px;
+  padding: 11px 15px;
+  font-size: 12px;
+  font-weight: bold;
+  transition: .2s;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #5745d4;
+}
+
+.btn-light {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.btn-danger {
+  background: #fff0f0;
+  color: var(--red);
+}
+
+.btn-success {
+  background: #e5f8f0;
+  color: var(--green);
+}
+
+/* STATISTICS */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 25px;
+}
+
+.stat-card {
+  background: white;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.stat-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+.stat-top span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.stat-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+}
+
+.purple { background: #eeeaff; }
+.green { background: #e3f8ef; }
+.orange { background: #fff2df; }
+.red { background: #ffebed; }
+
+.stat-card h2 {
+  font-size: 27px;
+  margin-bottom: 6px;
+}
+
+.stat-card small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* CARDS */
+
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 23px;
+  margin-bottom: 22px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+.card-header h3 {
+  font-size: 16px;
+}
+
+.card-header p {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.input {
+  border: 1px solid var(--border);
+  background: white;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--text);
+  max-width: 100%;
+}
+
+.filters .input {
+  width: 190px;
+}
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 700px;
+}
+
+th {
+  color: var(--muted);
+  font-size: 11px;
+  text-align: left;
+  font-weight: bold;
+  padding: 14px 12px;
+  background: #fafaff;
+  border-bottom: 1px solid var(--border);
+}
+
+td {
+  padding: 15px 12px;
+  font-size: 12px;
+  border-bottom: 1px solid #f0f1f6;
+}
+
+tbody tr:hover {
+  background: #fcfcff;
+}
+
+.member-name {
+  font-weight: bold;
+}
+
+.member-class {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.status {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.status-hadir {
+  color: var(--green);
+  background: #e5f8f0;
+}
+
+.status-izin {
+  color: var(--blue);
+  background: #eaf2ff;
+}
+
+.status-sakit {
+  color: var(--yellow);
+  background: #fff5df;
+}
+
+.status-alfa {
+  color: var(--red);
+  background: #ffebed;
+}
+
+.status-belum {
+  color: var(--muted);
+  background: #f0f1f6;
+}
+
+.attendance-select {
+  min-width: 105px;
+  padding: 7px;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: white;
+  font-size: 11px;
+}
+
+.empty {
+  padding: 35px;
+  text-align: center;
+  color: var(--muted);
+}
+
+/* SUMMARY */
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.summary-item {
+  margin-bottom: 22px;
+}
+
+.summary-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-bottom: 9px;
+}
+
+.bar {
+  background: #f0f1f6;
+  height: 9px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.bar div {
+  height: 100%;
+  border-radius: 20px;
+  transition: width .3s;
+}
+
+.bar-green { background: var(--green); }
+.bar-blue { background: var(--blue); }
+.bar-yellow { background: var(--yellow); }
+.bar-red { background: var(--red); }
+
+/* MODAL */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(13,17,36,.55);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 100;
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal-box {
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 430px;
+}
+
+.modal-box h3 {
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 7px;
+  font-weight: bold;
+}
+
+.form-group .input {
+  width: 100%;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* NOTIFICATION */
+
+.toast {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background: #20243a;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 10px;
+  font-size: 12px;
+  z-index: 200;
+  display: none;
+  box-shadow: 0 10px 35px #0002;
+}
+
+.toast.show {
+  display: block;
+}
+
+/* MOBILE */
+
+@media(max-width:1100px) {
+  .sidebar {
+    width: 210px;
+  }
+
+  .main {
+    margin-left: 210px;
+    width: calc(100% - 210px);
+  }
+
+  .content {
+    padding: 25px 20px;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media(max-width:700px) {
+  .sidebar {
+    width: 65px;
+    padding: 20px 7px;
+  }
+
+  .brand {
+    justify-content: center;
+    padding: 0 0 25px;
+  }
+
+  .brand-text,
+  .menu-title,
+  .menu-label,
+  .sidebar-footer {
+    display: none;
+  }
+
+  .menu button {
+    text-align: center;
+    padding: 14px 3px;
+    font-size: 18px;
+  }
+
+  .main {
+    margin-left: 65px;
+    width: calc(100% - 65px);
+  }
+
+  .topbar {
+    padding: 16px;
+  }
+
+  .topbar h2 {
+    font-size: 16px;
+  }
+
+  .topbar p {
+    font-size: 10px;
+  }
+
+  .profile span {
+    display: none;
+  }
+
+  .content {
+    padding: 20px 12px;
+  }
+
+  .welcome {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .welcome h1 {
+    font-size: 21px;
+  }
+
+  .date-badge {
+    font-size: 10px;
+  }
+
+  .stats {
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 14px;
+  }
+
+  .stat-card h2 {
+    font-size: 23px;
+  }
+
+  .stat-top span {
+    font-size: 10px;
+  }
+
+  .stat-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 15px;
+  }
+
+  .card {
+    padding: 15px;
+  }
+
+  .filters {
+    width: 100%;
+  }
+
+  .filters .input {
+    width: 100%;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .toast {
+    left: 80px;
+    right: 12px;
+    bottom: 12px;
+  }
+}
+
+@media print {
+  .sidebar, .topbar, .filters, .btn, .menu {
+    display: none !important;
+  }
+
+  .main {
+    width: 100%;
+    margin: 0;
+  }
+
+  .content {
+    padding: 0;
+  }
+
+  body {
+    background: white;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <div class="brand">
+      <div class="brand-icon">🎬</div>
+      <div class="brand-text">
+        <h2>MM Attendance</h2>
+        <small>EXTRACURRICULAR</small>
+      </div>
+    </div>
+
+    <div class="menu-title">MENU UTAMA</div>
+
+    <div class="menu">
+      <button class="active" data-page="dashboard">
+        📊 <span class="menu-label"> Dashboard</span>
+      </button>
+
+      <button data-page="anggota">
+        👥 <span class="menu-label"> Data Anggota</span>
+      </button>
+
+      <button data-page="absensi">
+        ✅ <span class="menu-label"> Absensi</span>
+      </button>
+
+      <button data-page="rekap">
+        📈 <span class="menu-label"> Rekap Absensi</span>
+      </button>
+    </div>
+
+    <div class="sidebar-footer">
+      <strong>Multimedia Club</strong><br>
+      Sistem Absensi Digital<br>
+      Versi 1.0
+    </div>
+
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <div class="topbar">
+      <div>
+        <h2 id="pageTitle">Dashboard</h2>
+        <p>Sistem Informasi Absensi Ekstrakurikuler Multimedia</p>
+      </div>
+
+      <div class="profile">
+        <div class="avatar">🎓</div>
+        <span>Pengurus Multimedia</span>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <section class="page active" id="dashboard">
+
+        <div class="welcome">
+          <div>
+            <h1>Halo, Tim Multimedia! 👋</h1>
+            <p>Kelola kehadiran anggota dengan lebih mudah dan teratur.</p>
+          </div>
+
+          <div class="date-badge" id="tanggalDashboard"></div>
+        </div>
+
+        <div class="stats">
+
+          <div class="stat-card">
+            <div class="stat-top">
+              <span>Total Anggota</span>
+              <div class="stat-icon purple">👥</div>
+            </div>
+            <h2 id="totalAnggota">0</h2>
+            <small>Anggota terdaftar</small>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-top">
+              <span>Hadir Hari Ini</span>
+              <div class="stat-icon green">✓</div>
+            </div>
+            <h2 id="totalHadir">0</h2>
+            <small>Anggota hadir</small>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-top">
+              <span>Izin / Sakit</span>
+              <div class="stat-icon orange">📝</div>
+            </div>
+            <h2 id="totalIzinSakit">0</h2>
+            <small>Anggota tidak hadir dengan keterangan</small>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-top">
+              <span>Alfa</span>
+              <div class="stat-icon red">!</div>
+            </div>
+            <h2 id="totalAlfa">0</h2>
+            <small>Tanpa keterangan</small>
+          </div>
+
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3>Absensi Hari Ini</h3>
+              <p>Ringkasan kehadiran anggota ekstrakurikuler.</p>
+            </div>
+            <button class="btn btn-primary" onclick="showPage('absensi')">
+              Kelola Absensi →
+            </button>
+          </div>
+
+          <div class="summary-grid">
+
+            <div>
+              <div class="summary-item">
+                <div class="summary-label">
+                  <span>Hadir</span>
+                  <strong id="labelHadir">0%</strong>
+                </div>
+                <div class="bar">
+                  <div class="bar-green" id="barHadir" style="width:0"></div>
+                </div>
+              </div>
+
+              <div class="summary-item">
+                <div class="summary-label">
+                  <span>Izin</span>
+                  <strong id="labelIzin">0%</strong>
+                </div>
+                <div class="bar">
+                  <div class="bar-blue" id="barIzin" style="width:0"></div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="summary-item">
+                <div class="summary-label">
+                  <span>Sakit</span>
+                  <strong id="labelSakit">0%</strong>
+                </div>
+                <div class="bar">
+                  <div class="bar-yellow" id="barSakit" style="width:0"></div>
+                </div>
+              </div>
+
+              <div class="summary-item">
+                <div class="summary-label">
+                  <span>Alfa</span>
+                  <strong id="labelAlfa">0%</strong>
+                </div>
+                <div class="bar">
+                  <div class="bar-red" id="barAlfa" style="width:0"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3>Aktivitas Absensi</h3>
+              <p>Data kehadiran untuk tanggal yang dipilih.</p>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>NO.</th>
+                  <th>NAMA ANGGOTA</th>
+                  <th>KELAS</th>
+                  <th>STATUS</th>
+                </tr>
+              </thead>
+              <tbody id="dashboardTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- DATA ANGGOTA -->
+      <section class="page" id="anggota">
+
+        <div class="welcome">
+          <div>
+            <h1>Data Anggota 👥</h1>
+            <p>Kelola data anggota ekstrakurikuler Multimedia.</p>
+          </div>
+
+          <button class="btn btn-primary" onclick="openModal()">
+            + Tambah Anggota
+          </button>
+        </div>
+
+        <div class="card">
+
+          <div class="card-header">
+            <div>
+              <h3>Daftar Anggota</h3>
+              <p>Tambah, cari, dan kelola anggota.</p>
+            </div>
+
+            <div class="filters">
+              <input class="input" id="searchAnggota"
+                placeholder="Cari nama atau kelas..."
+                oninput="renderMembers()">
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>NO.</th>
+                  <th>NAMA ANGGOTA</th>
+                  <th>KELAS</th>
+                  <th>AKSI</th>
+                </tr>
+              </thead>
+              <tbody id="membersTable"></tbody>
+            </table>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ABSENSI -->
+      <section class="page" id="absensi">
+
+        <div class="welcome">
+          <div>
+            <h1>Absensi Anggota ✅</h1>
+            <p>Tentukan status kehadiran setiap anggota.</p>
+          </div>
+        </div>
+
+        <div class="card">
+
+          <div class="card-header">
+            <div>
+              <h3>Formulir Kehadiran</h3>
+              <p>Pilih tanggal pertemuan, lalu isi status anggota.</p>
+            </div>
+
+            <input type="date" class="input"
+              id="tanggalAbsensi" onchange="renderAttendance()">
+          </div>
+
+          <div class="filters" style="margin-bottom:20px">
+            <input class="input" id="searchAbsensi"
+              placeholder="Cari nama anggota..."
+              oninput="renderAttendance()">
+
+            <button class="btn btn-light" onclick="setAll('Hadir')">
+              Semua Hadir
+            </button>
+
+            <button class="btn btn-primary" onclick="saveAttendance()">
+              💾 Simpan Absensi
+            </button>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>NO.</th>
+                  <th>NAMA ANGGOTA</th>
+                  <th>KELAS</th>
+                  <th>STATUS KEHADIRAN</th>
+                </tr>
+              </thead>
+              <tbody id="attendanceTable"></tbody>
+            </table>
+          </div>
+
+          <p style="color:var(--muted);font-size:11px;margin-top:15px">
+            Periksa kembali status sebelum menekan tombol Simpan Absensi.
+          </p>
+
+        </div>
+
+      </section>
+
+      <!-- REKAP -->
+      <section class="page" id="rekap">
+
+        <div class="welcome">
+          <div>
+            <h1>Rekap Absensi 📈</h1>
+            <p>Evaluasi kehadiran anggota berdasarkan periode.</p>
+          </div>
+        </div>
+
+        <div class="card">
+
+          <div class="card-header">
+            <div>
+              <h3>Filter Rekap</h3>
+              <p>Pilih rentang tanggal untuk melihat data.</p>
+            </div>
+          </div>
+
+          <div class="filters">
+            <input type="date" class="input" id="rekapMulai">
+
+            <input type="date" class="input" id="rekapSampai">
+
+            <button class="btn btn-primary" onclick="renderRecap()">
+              Tampilkan
+            </button>
+
+            <button class="btn btn-light" onclick="exportCSV()">
+              ↓ Unduh CSV
+            </button>
+
+            <button class="btn btn-light" onclick="window.print()">
+              🖨 Cetak
+            </button>
+          </div>
+
+        </div>
+
+        <div class="stats">
+
+          <div class="stat-card">
+            <div class="stat-top">
+              <span>Total Pertemuan</span>
+              <div class="stat-icon purple">📅</div>
+            </div>
+            <h2 id="recapMeetings">0</h2>
+            <small>Tanggal dengan catatan absensi</small>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-top">
+              <span>Total Hadir</span>
+              <div class="stat-icon green">✓</div>
+            </div>
+            <h2 id="recapPresent">0</h2>
+            <small>Catatan berstatus hadir</small>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-top">
+              <span>Total Izin / Sakit</span>
+              <div class="stat-icon orange">📝</div>
+            </div>
+            <h2 id="recapExcused">0</h2>
+            <small>Catatan berizin atau sakit</small>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-top">
+              <span>Total Alfa</span>
+              <div class="stat-icon red">!</div>
+            </div>
+            <h2 id="recapAbsent">0</h2>
+            <small>Catatan tanpa keterangan</small>
+          </div>
+
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3>Rekap per Anggota</h3>
+              <p>Persentase kehadiran dari seluruh pertemuan yang tercatat.</p>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>NO.</th>
+                  <th>NAMA ANGGOTA</th>
+                  <th>KELAS</th>
+                  <th>HADIR</th>
+                  <th>IZIN</th>
+                  <th>SAKIT</th>
+                  <th>ALFA</th>
+                  <th>KEHADIRAN</th>
+                </tr>
+              </thead>
+              <tbody id="recapTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+</div>
+
+<!-- MODAL TAMBAH ANGGOTA -->
+<div class="modal" id="memberModal">
+  <div class="modal-box">
+
+    <h3>Tambah Anggota Baru</h3>
+
+    <form id="memberForm">
+
+      <div class="form-group">
+        <label for="memberName">Nama Lengkap</label>
+        <input class="input" id="memberName"
+          placeholder="Masukkan nama lengkap" required>
+      </div>
+
+      <div class="form-group">
+        <label for="memberClass">Kelas</label>
+        <input class="input" id="memberClass"
+          placeholder="Contoh: XI Multimedia" required>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-light"
+          onclick="closeModal()">Batal</button>
+
+        <button type="submit" class="btn btn-primary">
+          Simpan Anggota
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================================
+   PENYIMPANAN DATA LOKAL
+================================ */
+
+const MEMBER_KEY = "multimedia_members_v1";
+const ATTENDANCE_KEY = "multimedia_attendance_v1";
+
+function loadJSON(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch (error) {
+    return fallback;
+  }
+}
+
+let members = loadJSON(MEMBER_KEY, []);
+let attendance = loadJSON(ATTENDANCE_KEY, {});
+
+function saveData() {
+  try {
+    localStorage.setItem(MEMBER_KEY, JSON.stringify(members));
+    localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(attendance));
+    return true;
+  } catch (error) {
+    notify("Gagal menyimpan. Periksa penyimpanan browser.");
+    return false;
+  }
+}
+
+/* ================================
+   TANGGAL
+================================ */
+
+function localDate(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+function formatDate(date) {
+  if (!date) return "-";
+
+  return new Date(date + "T12:00:00").toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  });
+}
+
+const today = localDate();
+
+document.getElementById("tanggalAbsensi").value = today;
+document.getElementById("rekapMulai").value =
+  `${today.slice(0, 4)}-${today.slice(5, 7)}-01`;
+document.getElementById("rekapSampai").value = today;
+
+document.getElementById("tanggalDashboard").textContent =
+  formatDate(today);
+
+/* ================================
+   NAVIGASI
+================================ */
+
+const titles = {
+  dashboard: "Dashboard",
+  anggota: "Data Anggota",
+  absensi: "Absensi Anggota",
+  rekap: "Rekap Absensi"
+};
+
+function showPage(page) {
+  document.querySelectorAll(".page").forEach(el => {
+    el.classList.toggle("active", el.id === page);
+  });
+
+  document.querySelectorAll(".menu button").forEach(button => {
+    button.classList.toggle(
+      "active",
+      button.dataset.page === page
+    );
+  });
+
+  document.getElementById("pageTitle").textContent = titles[page];
+
+  if (page === "dashboard") renderDashboard();
+  if (page === "anggota") renderMembers();
+  if (page === "absensi") renderAttendance();
+  if (page === "rekap") renderRecap();
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+document.querySelectorAll(".menu button").forEach(button => {
+  button.addEventListener("click", () => {
+    showPage(button.dataset.page);
+  });
+});
+
+/* ================================
+   NOTIFIKASI
+================================ */
+
+let toastTimer;
+
+function notify(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3000);
+}
+
+/* ================================
+   ANGGOTA
+================================ */
+
+function openModal() {
+  document.getElementById("memberModal").classList.add("show");
+  document.getElementById("memberName").focus();
+}
+
+function closeModal() {
+  document.getElementById("memberModal").classList.remove("show");
+}
+
+document.getElementById("memberForm").addEventListener(
+  "submit",
+  function(event) {
+    event.preventDefault();
+
+    const name =
+      document.getElementById("memberName").value.trim();
+
+    const kelas =
+      document.getElementById("memberClass").value.trim();
+
+    if (!name || !kelas) return;
+
+    const member = {
+      id: Date.now().toString() + Math.random().toString(36).slice(2, 7),
+      name,
+      kelas
+    };
+
+    members.push(member);
+
+    if (!saveData()) {
+      members = members.filter(item => item.id !== member.id);
+      return;
+    }
+
+    this.reset();
+    closeModal();
+
+    renderMembers();
+    renderDashboard();
+    renderAttendance();
+    renderRecap();
+
+    notify("Anggota berhasil ditambahkan!");
+  }
+);
+
+function deleteMember(id) {
+  const member = members.find(item => item.id === id);
+  if (!member) return;
+
+  if (!confirm(`Hapus anggota ${member.name}?`)) return;
+
+  const previousMembers = members;
+  members = members.filter(item => item.id !== id);
+
+  if (!saveData()) {
+    members = previousMembers;
+    return;
+  }
+
+  renderMembers();
+  renderDashboard();
+  renderAttendance();
+  renderRecap();
+
+  notify("Anggota berhasil dihapus.");
+}
+
+function renderMembers() {
+  const query =
+    document.getElementById("searchAnggota").value.toLowerCase();
+
+  const filtered = members.filter(member =>
+    member.name.toLowerCase().includes(query) ||
+    member.kelas.toLowerCase().includes(query)
+  );
+
+  const tbody = document.getElementById("membersTable");
+
+  if (!filtered.length) {
+    tbody.innerHTML = `
+      <tr><td colspan="4" class="empty">
+        Belum ada anggota. Klik Tambah Anggota untuk memulai.
+      </td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map((member, index) => `
+    <tr>
+      <td>${index + 1}</td>
+      <td><div class="member-name">${escapeHTML(member.name)}</div></td>
+      <td>${escapeHTML(member.kelas)}</td>
+      <td>
+        <button class="btn btn-danger"
+          onclick="deleteMember('${member.id}')">Hapus</button>
+      </td>
+    </tr>
+  `).join("");
+}
+
+/* ================================
+   ABSENSI
+================================ */
+
+function getRecord(date, memberId) {
+  return attendance[date]?.[memberId] || "";
+}
+
+function setStatus(memberId, status) {
+  const date = document.getElementById("tanggalAbsensi").value;
+
+  if (!date) {
+    notify("Pilih tanggal absensi terlebih dahulu.");
+    return;
+  }
+
+  if (!attendance[date]) attendance[date] = {};
+
+  if (status) {
+    attendance[date][memberId] = status;
+  } else {
+    delete attendance[date][memberId];
+  }
+
+  renderAttendance();
+}
+
+function renderAttendance() {
+  const date = document.getElementById("tanggalAbsensi").value;
+  const query =
+    document.getElementById("searchAbsensi").value.toLowerCase();
+
+  const tbody = document.getElementById("attendanceTable");
+
+  const filtered = members.filter(member =>
+    member.name.toLowerCase().includes(query) ||
+    member.kelas.toLowerCase().includes(query)
+  );
+
+  if (!filtered.length) {
+    tbody.innerHTML = `
+      <tr><td colspan="4" class="empty">
+        Belum ada anggota. Tambahkan anggota terlebih dahulu.
+      </td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map((member, index) => {
+    const status = getRecord(date, member.id);
+
+    return `
+      <tr>
+        <td>${index + 1}</td>
+        <td><div class="member-name">${escapeHTML(member.name)}</div></td>
+        <td>${escapeHTML(member.kelas)}</td>
+        <td>
+          <select class="attendance-select"
+            aria-label="Status ${escapeHTML(member.name)}"
+            onchange="setStatus('${member.id}', this.value)">
+            <option value="" ${status === "" ? "selected" : ""}>
+              Belum diisi
+            </option>
+            <option value="Hadir" ${status === "Hadir" ? "selected" : ""}>
+              Hadir
+            </option>
+            <option value="Izin" ${status === "Izin" ? "selected" : ""}>
+              Izin
+            </option>
+            <option value="Sakit" ${status === "Sakit" ? "selected" : ""}>
+              Sakit
+            </option>
+            <option value="Alfa" ${status === "Alfa" ? "selected" : ""}>
+              Alfa
+            </option>
+          </select>
+        </td>
+      </tr>
+    `;
+  }).join("");
+}
+
+function setAll(status) {
+  const date = document.getElementById("tanggalAbsensi").value;
+
+  if (!date) {
+    notify("Pilih tanggal absensi terlebih dahulu.");
+    return;
+  }
+
+  if (!members.length) {
+    notify("Tambahkan anggota terlebih dahulu.");
+    return;
+  }
+
+  if (!confirm(`Tandai semua ${members.length} anggota sebagai ${status}?`)) {
+    return;
+  }
+
+  if (!attendance[date]) attendance[date] = {};
+
+  members.forEach(member => {
+    attendance[date][member.id] = status;
+  });
+
+  renderAttendance();
+  notify("Status kehadiran berhasil diatur. Tekan Simpan Absensi.");
+}
+
+function saveAttendance() {
+  const date = document.getElementById("tanggalAbsensi").value;
+
+  if (!date) {
+    notify("Pilih tanggal absensi.");
+    return;
+  }
+
+  if (!members.length) {
+    notify("Tambahkan anggota terlebih dahulu.");
+    return;
+  }
+
+  const record = attendance[date] || {};
+
+  const filled = members.filter(member =>
+    ["Hadir", "Izin", "Sakit", "Alfa"].includes(record[member.id])
+  ).length;
+
+  if (filled < members.length) {
+    if (!confirm(
+      `Baru ${filled} dari ${members.length} anggota yang diisi. Simpan?`
+    )) return;
+  }
+
+  if (!saveData()) return;
+
+  renderDashboard();
+  renderRecap();
+
+  notify("Absensi berhasil disimpan di browser ini.");
+}
+
+/* ================================
+   DASHBOARD
+================================ */
+
+function statusCounts(date) {
+  const counts = {
+    Hadir: 0,
+    Izin: 0,
+    Sakit: 0,
+    Alfa: 0,
+    Belum: 0
+  };
+
+  members.forEach(member => {
+    const status = getRecord(date, member.id);
+
+    if (Object.prototype.hasOwnProperty.call(counts, status)) {
+      counts[status]++;
+    } else {
+      counts.Belum++;
+    }
+  });
+
+  return counts;
+}
+
+function setBar(name, count, total) {
+  const percentage = total ? Math.round(count / total * 100) : 0;
+
+  document.getElementById("label" + name).textContent =
+    percentage + "%";
+
+  document.getElementById("bar" + name).style.width =
+    percentage + "%";
+}
+
+function renderDashboard() {
+  const counts = statusCounts(today);
+
+  document.getElementById("totalAnggota").textContent = members.length;
+  document.getElementById("totalHadir").textContent = counts.Hadir;
+
+  document.getElementById("totalIzinSakit").textContent =
+    counts.Izin + counts.Sakit;
+
+  document.getElementById("totalAlfa").textContent = counts.Alfa;
+
+  setBar("Hadir", counts.Hadir, members.length);
+  setBar("Izin", counts.Izin, members.length);
+  setBar("Sakit", counts.Sakit, members.length);
+  setBar("Alfa", counts.Alfa, members.length);
+
+  const tbody = document.getElementById("dashboardTable");
+
+  if (!members.length) {
+    tbody.innerHTML = `
+      <tr><td colspan="4" class="empty">
+        Belum ada anggota terdaftar.
+      </td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = members.slice(0, 10).map((member, index) => {
+    const status = getRecord(today, member.id) || "Belum diisi";
+
+    return `
+      <tr>
+        <td>${index + 1}</td>
+        <td><div class="member-name">${escapeHTML(member.name)}</div></td>
+        <td>${escapeHTML(member.kelas)}</td>
+        <td>${statusBadge(status)}</td>
+      </tr>
+    `;
+  }).join("");
+}
+
+function statusBadge(status) {
+  const classes = {
+    "Hadir": "status-hadir",
+    "Izin": "status-izin",
+    "Sakit": "status-sakit",
+    "Alfa": "status-alfa",
+    "Belum diisi": "status-belum"
+  };
+
+  return `<span class="status ${classes[status] || "status-belum"}">${
+    escapeHTML(status)
+  }</span>`;
+}
+
+/* ================================
+   REKAP ABSENSI
+================================ */
+
+function getDateRange() {
+  const start = document.getElementById("rekapMulai").value;
+  const end = document.getElementById("rekapSampai").value;
+
+  if (!start || !end) {
+    notify("Pilih tanggal awal dan akhir.");
+    return null;
+  }
+
+  if (start > end) {
+    notify("Tanggal awal tidak boleh melewati tanggal akhir.");
+    return null;
+  }
+
+  return { start, end };
+}
+
+function renderRecap() {
+  const range = getDateRange();
+  if (!range) return;
+
+  const dates = Object.keys(attendance)
+    .filter(date => date >= range.start && date <= range.end)
+    .filter(date =>
+      Object.values(attendance[date] || {}).some(status =>
+        ["Hadir", "Izin", "Sakit", "Alfa"].includes(status)
+      )
+    )
+    .sort();
+
+  const totals = {
+    Hadir: 0,
+    Izin: 0,
+    Sakit: 0,
+    Alfa: 0
+  };
+
+  dates.forEach(date => {
+    Object.values(attendance[date] || {}).forEach(status => {
+      if (Object.prototype.hasOwnProperty.call(totals, status)) {
+        totals[status]++;
+      }
+    });
+  });
+
+  document.getElementById("recapMeetings").textContent = dates.length;
+  document.getElementById("recapPresent").textContent = totals.Hadir;
+
+  document.getElementById("recapExcused").textContent =
+    totals.Izin + totals.Sakit;
+
+  document.getElementById("recapAbsent").textContent = totals.Alfa;
+
+  const tbody = document.getElementById("recapTable");
+
+  if (!members.length) {
+    tbody.innerHTML = `
+      <tr><td colspan="8" class="empty">
+        Belum ada anggota terdaftar.
+      </td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = members.map((member, index) => {
+    const counts = {
+      Hadir: 0,
+      Izin: 0,
+      Sakit: 0,
+      Alfa: 0
+    };
+
+    dates.forEach(date => {
+      const status = getRecord(date, member.id);
+
+      if (Object.prototype.hasOwnProperty.call(counts, status)) {
+        counts[status]++;
+      }
+    });
+
+    const total =
+      counts.Hadir + counts.Izin + counts.Sakit + counts.Alfa;
+
+    const percentage = total
+      ? Math.round(counts.Hadir / total * 100)
+      : 0;
+
+    return `
+      <tr>
+        <td>${index + 1}</td>
+        <td><div class="member-name">${escapeHTML(member.name)}</div></td>
+        <td>${escapeHTML(member.kelas)}</td>
+        <td>${counts.Hadir}</td>
+        <td>${counts.Izin}</td>
+        <td>${counts.Sakit}</td>
+        <td>${counts.Alfa}</td>
+        <td><strong>${percentage}%</strong></td>
+      </tr>
+    `;
+  }).join("");
+}
+
+/* ================================
+   EKSPOR CSV
+================================ */
+
+function exportCSV() {
+  const range = getDateRange();
+  if (!range) return;
+
+  const dates = Object.keys(attendance)
+    .filter(date => date >= range.start && date <= range.end)
+    .filter(date =>
+      Object.values(attendance[date] || {}).some(status =>
+        ["Hadir", "Izin", "Sakit", "Alfa"].includes(status)
+      )
+    )
+    .sort();
+
+  if (!members.length) {
+    notify("Belum ada data anggota.");
+    return;
+  }
+
+  const rows = [
+    ["No", "Nama", "Kelas", ...dates.map(formatDate)]
+  ];
+
+  members.forEach((member, index) => {
+    rows.push([
+      index + 1,
+      member.name,
+      member.kelas,
+      ...dates.map(date => getRecord(date, member.id) || "Belum diisi")
+    ]);
+  });
+
+  const csv = "\uFEFF" + rows.map(row =>
+    row.map(value =>
+      '"' + String(value).replace(/"/g, '""') + '"'
+    ).join(",")
+  ).join("\r\n");
+
+  const blob = new Blob([csv], {
+    type: "text/csv;charset=utf-8;"
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = `rekap-multimedia-${range.start}-${range.end}.csv`;
+
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  URL.revokeObjectURL(url);
+
+  notify("File rekap berhasil dibuat.");
+}
+
+/* ================================
+   KEAMANAN TAMPILAN TEKS
+================================ */
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+
+/* ================================
+   MULAI APLIKASI
+================================ */
+
+renderDashboard();
+renderMembers();
+renderAttendance();
+renderRecap();
+</script>
+
+</body>
